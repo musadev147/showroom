@@ -2,73 +2,106 @@ import { apiClient } from '../client';
 import { ApiResponse, PaginatedResponse } from '../../types/api.types';
 import { Product, ProductInput } from '../../types/product.types';
 
-// InMemory database simulation for complete runnable demo - Luxury Furniture Catalog
+// InMemory database simulation for complete runnable demo - Exclusive Girls' Dress Boutique
 let inMemoryProducts: Product[] = [
   {
     id: 'prod-1',
-    name: 'Compact Coffee Table',
+    name: 'Dior Premium Party Gown',
     description:
-      'Minimalist low-height coffee table with slide drawer and solid warm ashwood frame.',
-    price: 129.0,
-    category: 'Tables',
-    stock: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&q=80',
+      'An elegant designer red party gown crafted in pure silk with premium embroidery. Perfect for elite gatherings.',
+    price: 25500.0,
+    category: 'Gowns',
+    stock: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&q=80',
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'prod-2',
-    name: 'Nordic Sideboard Cabinet',
+    name: 'Gucci Summer Floral Dress',
     description:
-      'Spacious natural birchwood cabinet with sleek structural sliding panels and gold highlights.',
-    price: 199.0,
-    category: 'Cabinets',
-    stock: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=500&q=80',
+      'Beautiful lightweight summer dress with vibrant floral patterns, tailored with premium breathable fabrics.',
+    price: 18000.0,
+    category: 'Summer Dresses',
+    stock: 8,
+    imageUrl: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500&q=80',
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'prod-3',
-    name: 'Modern TV Console',
+    name: 'Classic Evening Silk Gown',
     description:
-      'Low-profile media entertainment console featuring mesh wire storage and sleek oak shelves.',
-    price: 149.0,
-    category: 'Consoles',
-    stock: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=500&q=80',
+      'A luxurious dark-themed silk evening gown showcasing premium draping and a high-end designer finish.',
+    price: 32000.0,
+    category: 'Gowns',
+    stock: 3,
+    imageUrl: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&q=80',
     createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'prod-4',
-    name: 'White Utility Cabinet',
+    name: 'Prada Sunshine Yellow Frock',
     description:
-      'Multi-functional structural locker with mesh doors and powder-coated steel hardware.',
-    price: 135.0,
-    category: 'Cabinets',
+      'Bright and elegant yellow casual dress featuring a modern pleated skirt and comfortable regular fit.',
+    price: 12500.0,
+    category: 'Frocks',
     stock: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80',
     createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'prod-5',
-    name: 'Charcoal Sofa Bench',
+    name: 'Zara Elegant Cotton Dress',
     description:
-      'Premium high-density foam daybed upholstered in luxurious organic slate wool textures.',
-    price: 295.0,
-    category: 'Sofas',
-    stock: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&q=80',
+      'Classic minimalist white cotton dress featuring exquisite lacework details and a breathable relaxed silhouette.',
+    price: 8500.0,
+    category: 'Casual Dresses',
+    stock: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1554412933-514a83d2f3c8?w=500&q=80',
     createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'prod-6',
-    name: 'Vertical Drawer Dresser',
+    name: 'Elegant Evening White Gown',
     description:
-      'Slim vertical wooden tallboy dresser with structural maple drawer rails and brass pulls.',
-    price: 159.0,
-    category: 'Dressers',
-    stock: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=500&q=80',
+      'Sophisticated pure white designer gown with dynamic cutouts and heavy sequined lace panels.',
+    price: 28500.0,
+    category: 'Gowns',
+    stock: 4,
+    imageUrl: 'https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=500&q=80',
     createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'prod-7',
+    name: 'Classy Blush Pink Gown',
+    description:
+      'High-fashion pink luxury gown tailored with dynamic soft silk overlays and a modern halter-neck.',
+    price: 22000.0,
+    category: 'Gowns',
+    stock: 7,
+    imageUrl: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80',
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'prod-8',
+    name: 'Vintage Bohemian Dress',
+    description:
+      'A stylish bohemian style retro dress featuring vintage paisley prints and a comfortable relaxed flare.',
+    price: 15000.0,
+    category: 'Bohemian',
+    stock: 6,
+    imageUrl: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500&q=80',
+    createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'prod-9',
+    name: 'Nordic Summer Beachwear',
+    description:
+      'Flowy resort-style summer dress with elegant strap details and a beautiful modern flare.',
+    price: 9500.0,
+    category: 'Summer Dresses',
+    stock: 9,
+    imageUrl: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&q=80',
+    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
@@ -128,7 +161,7 @@ export async function createProductApi(input: ProductInput): Promise<ApiResponse
       category: input.category,
       stock: input.stock,
       imageUrl:
-        input.imageUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80',
+        input.imageUrl || 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&q=80',
       createdAt: new Date().toISOString(),
     };
     inMemoryProducts.unshift(newProduct);

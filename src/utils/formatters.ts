@@ -1,7 +1,7 @@
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('bn-BD', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'BDT',
   }).format(amount);
 }
 

@@ -2,6 +2,7 @@ import { BaseComponent } from '../components/common/base.component';
 import { InputComponent } from '../components/common/input.component';
 import { ButtonComponent } from '../components/common/button.component';
 import { AuthService } from '../services/auth.service';
+import logoImg from '../assets/images/logo.png';
 
 export class LoginPage extends BaseComponent {
   private emailInput!: InputComponent;
@@ -14,7 +15,8 @@ export class LoginPage extends BaseComponent {
       <div class="login-wrapper">
         <div class="login-glow"></div>
         <div class="glass-card login-card animate-fade-in">
-          <div class="login-header">
+          <div class="login-header" style="text-align: center; margin-bottom: 2rem;">
+            <img src="${logoImg}" alt="Marufa Logo" style="height: 60px; margin: 0 auto 1rem; display: block; object-fit: contain; border-radius: 6px;" />
             <h1 class="text-gradient">Marufa Admin</h1>
             <p>Boilerplate System Login</p>
           </div>

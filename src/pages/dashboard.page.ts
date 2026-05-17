@@ -7,6 +7,7 @@ import { ProductService } from '../services/product.service';
 import { AuthService } from '../services/auth.service';
 import { Product, ProductInput } from '../types/product.types';
 import { formatCurrency } from '../utils/formatters';
+import logoImg from '../assets/images/logo.png';
 
 export class DashboardPage extends BaseComponent {
   private products: Product[] = [];
@@ -36,9 +37,12 @@ export class DashboardPage extends BaseComponent {
       <div class="dashboard-wrapper animate-fade-in">
         <!-- Header -->
         <header class="dashboard-header glass-card">
-          <div class="header-left">
-            <h1 class="text-gradient">Marufa Control Center</h1>
-            <p>Welcome back, <span class="username-highlight">${user?.username || 'Administrator'}</span></p>
+          <div class="header-left" style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="${logoImg}" alt="Marufa Logo" style="height: 38px; width: auto; object-fit: contain; border-radius: 4px;" />
+            <div>
+              <h1 class="text-gradient" style="margin: 0; font-size: 1.5rem;">Marufa Control Center</h1>
+              <p style="margin: 0; font-size: 0.875rem;">Welcome back, <span class="username-highlight">${user?.username || 'Administrator'}</span></p>
+            </div>
           </div>
           <div class="header-right">
             <button id="btn-logout" class="btn btn-ghost" title="Sign Out">Logout 🚪</button>
@@ -119,20 +123,20 @@ export class DashboardPage extends BaseComponent {
     // Initialize & mount modal inputs
     this.inputName = new InputComponent({
       label: 'Product Name',
-      placeholder: 'e.g. Nordic Lounge Chair',
+      placeholder: 'e.g. Jamdani Saree',
       required: true,
       id: 'modal-pname',
       name: 'pname',
     });
     this.inputCategory = new InputComponent({
       label: 'Category',
-      placeholder: 'e.g. Chairs',
+      placeholder: 'e.g. Sarees',
       required: true,
       id: 'modal-pcat',
       name: 'pcat',
     });
     this.inputPrice = new InputComponent({
-      label: 'Price ($)',
+      label: 'Price (৳)',
       type: 'number',
       placeholder: 'e.g. 199.00',
       required: true,

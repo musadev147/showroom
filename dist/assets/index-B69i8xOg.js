@@ -470,4 +470,4 @@ var Mt=Object.defineProperty;var $t=(e,t,n)=>t in e?Mt(e,t,{enumerable:!0,config
       <span class="notification-icon">${i}</span>
       <span class="notification-message">${n}</span>
     `,r.appendChild(o),setTimeout(()=>{o.style.animation="fadeIn 0.25s reverse forwards",setTimeout(()=>{o.remove()},250)},4e3)}}document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("app");e?(new Hs().mount(e),console.info('[Marufa Boilerplate] Initialized environment: "development"')):console.error("[Marufa Boilerplate] Failed to mount application: #app root not found.")});
-//# sourceMappingURL=index-CBMeK79O.js.map
+//# sourceMappingURL=index-B69i8xOg.js.map

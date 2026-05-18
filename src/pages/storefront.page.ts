@@ -7,9 +7,76 @@ import heroImg from '../assets/images/maru.jpeg';
 
 export class StorefrontPage extends BaseComponent {
   private products: Product[] = [];
+  private selectedCategory: string = 'All';
 
   public render(): string {
     return `
+      <style>
+        /* Category Tabs Styling */
+        .category-tab {
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: var(--text-secondary);
+          padding: 0.65rem 1.5rem;
+          border-radius: 30px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-tab:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+          color: var(--text-primary);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-tab.active {
+          background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+          color: #fff;
+          border-color: transparent;
+          box-shadow: 0 0 15px rgba(168, 85, 247, 0.4), 0 4px 10px rgba(168, 85, 247, 0.2);
+        }
+
+        /* Product Image Hover Effects */
+        .storefront-product-img-wrapper {
+          cursor: pointer;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .storefront-product-img {
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .storefront-product-img-wrapper:hover .storefront-product-img {
+          transform: scale(1.06);
+        }
+
+        /* Custom Scrollbar for details description */
+        .details-desc-scroll::-webkit-scrollbar {
+          width: 4px;
+        }
+        .details-desc-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .details-desc-scroll::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: var(--radius-full);
+        }
+        .details-desc-scroll::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+      </style>
+
       <div class="storefront-wrapper animate-fade-in">
         <!-- Transparent Glass Navigation Bar -->
         <nav class="storefront-nav">
@@ -58,11 +125,16 @@ export class StorefrontPage extends BaseComponent {
 
         <!-- Catalog Showcase Section -->
         <section id="shop" class="storefront-catalog-section">
-          <div class="catalog-header">
+          <div class="catalog-header" style="flex-direction: column; align-items: center; text-align: center; margin-bottom: 3rem;">
             <div class="catalog-title-group">
-              <h2>Timeless fashion for every occasion</h2>
-              <p>Explore our premium catalog of Sarees, Salwar Kameez, Panjabis, and Lehengas.</p>
+              <h2 style="font-size: 2.75rem;">Timeless fashion for every occasion</h2>
+              <p style="font-size: 1.05rem; margin-top: 0.75rem; color: var(--text-secondary);">Explore our premium catalog of Sarees, Salwar Kameez, Panjabis, and Lehengas.</p>
             </div>
+          </div>
+
+          <!-- Dynamic Category Tabs -->
+          <div id="storefront-category-tabs" class="category-filter-wrapper animate-fade-in" style="margin-bottom: 3.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+             <!-- Inject dynamic categories -->
           </div>
 
           <!-- Mount point for products catalog -->
@@ -199,6 +271,47 @@ export class StorefrontPage extends BaseComponent {
           </div>
         </footer>
 
+        <!-- Product Details Glassmorphism Modal -->
+        <div id="product-details-modal" class="modal-backdrop hidden">
+          <div class="glass-card modal-content animate-fade-in" style="max-width: 750px; padding: 2.5rem; background: rgba(10, 15, 30, 0.95); position: relative; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 85, 247, 0.25);">
+            <!-- Close button -->
+            <button id="btn-close-details" class="btn-close-x" style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 2rem; color: rgba(255, 255, 255, 0.6); transition: color 0.2s;">&times;</button>
+            
+            <!-- Modal Content Grid -->
+            <div class="product-details-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; margin-top: 1rem;">
+              <!-- Product Image Frame -->
+              <div class="details-img-wrapper" style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); background: #0c0f1d; height: 350px; display: flex; align-items: center; justify-content: center;">
+                <img id="details-img" src="" alt="Product Details Image" style="width: 100%; height: 100%; object-fit: cover;" />
+              </div>
+              
+              <!-- Product Meta Details -->
+              <div class="details-info" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <span id="details-category" class="hero-subtitle" style="font-size: 0.75rem; letter-spacing: 0.12em; color: var(--color-secondary); font-weight: 700;">CATEGORY</span>
+                  <h2 id="details-title" style="font-size: 2rem; font-weight: 800; color: #ffffff; margin-top: 0.5rem; line-height: 1.2; letter-spacing: -0.02em;">Product Name</h2>
+                  
+                  <div style="display: flex; align-items: center; gap: 1.25rem; margin: 1.25rem 0;">
+                    <span id="details-price" style="font-size: 1.85rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, #a855f7, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">৳ 0.00</span>
+                    <span id="details-stock-badge" class="storefront-product-stock" style="position: static; padding: 0.35rem 0.85rem; border-radius: 30px; font-size: 0.75rem; font-weight: 700;">In Stock</span>
+                  </div>
+                  
+                  <!-- Scrollable Description Panel -->
+                  <p id="details-description" class="details-desc-scroll" style="color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem; max-height: 140px; overflow-y: auto; padding-right: 8px;">
+                    Detailed item specifications...
+                  </p>
+                </div>
+                
+                <!-- Purchase Button Block -->
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1.5rem;">
+                  <button id="btn-buy-details" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.05rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                    Buy Now & Pay <span style="font-weight: 400; font-size: 1.15rem;">💳</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- SSL Commerz Mock Modal -->
         <div id="ssl-modal" class="modal-backdrop hidden">
           <div class="glass-card modal-content animate-fade-in" style="max-width: 450px; background: #ffffff; color: #333; padding: 2rem;">
@@ -284,6 +397,21 @@ export class StorefrontPage extends BaseComponent {
       });
     }
 
+    // Product Details Modal Close Bindings
+    const detailsModal = this.element?.querySelector('#product-details-modal');
+    const btnCloseDetails = this.element?.querySelector('#btn-close-details');
+    if (btnCloseDetails && detailsModal) {
+      btnCloseDetails.addEventListener('click', () => {
+        detailsModal.classList.add('hidden');
+      });
+      // Close on clicking backdrop
+      detailsModal.addEventListener('click', (e) => {
+        if (e.target === detailsModal) {
+          detailsModal.classList.add('hidden');
+        }
+      });
+    }
+
     // Load products asynchronously
     this.loadCatalog();
   }
@@ -307,28 +435,76 @@ export class StorefrontPage extends BaseComponent {
     }
   }
 
+  private getCategories(): string[] {
+    const categoriesSet = new Set<string>();
+    this.products.forEach((p) => {
+      if (p.category) categoriesSet.add(p.category);
+    });
+    
+    if (categoriesSet.size === 0) {
+      return ['All', 'Gowns', 'Summer Dresses', 'Frocks', 'Casual Dresses', 'Bohemian'];
+    }
+    return ['All', ...Array.from(categoriesSet)];
+  }
+
+  private renderCategories(): void {
+    const catContainer = this.element?.querySelector('#storefront-category-tabs') as HTMLElement;
+    if (!catContainer) return;
+
+    const categories = this.getCategories();
+    catContainer.innerHTML = categories
+      .map(
+        (cat) => `
+        <button class="category-tab ${this.selectedCategory === cat ? 'active' : ''}" data-category="${cat}">
+          ${cat === 'All' ? '✨ All Collections' : cat}
+        </button>
+      `
+      )
+      .join('');
+
+    // Bind tab clicks
+    const tabs = catContainer.querySelectorAll('.category-tab');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        this.selectedCategory = (tab as HTMLElement).dataset.category || 'All';
+        this.renderCatalog();
+      });
+    });
+  }
+
   private renderCatalog(): void {
+    // Render/refresh category filters
+    this.renderCategories();
+
     const mountPoint = this.element?.querySelector('#storefront-catalog-mount') as HTMLElement;
     if (!mountPoint) return;
 
-    if (!this.products.length) {
+    // Filter products locally by current selected category
+    const filteredProducts =
+      this.selectedCategory === 'All'
+        ? this.products
+        : this.products.filter(
+            (p) => p.category.toLowerCase() === this.selectedCategory.toLowerCase()
+          );
+
+    if (!filteredProducts.length) {
       mountPoint.innerHTML = `
-        <div class="grid-empty-container">
+        <div class="grid-empty-container" style="padding: 3rem 1.5rem;">
           <div class="empty-icon">📦</div>
-          <h3>Showroom is empty</h3>
-          <p>Please log in as Administrator to register luxury assets.</p>
+          <h3>No items found</h3>
+          <p>There are no premium items cataloged in the "${this.selectedCategory}" selection yet.</p>
         </div>
       `;
       return;
     }
 
-    const cardsHtml = this.products
+    const cardsHtml = filteredProducts
       .map(
         (product) => `
         <div class="storefront-product-card animate-fade-in">
           <!-- Image frame -->
           <div class="storefront-product-img-wrapper" style="background-color: #fcfcfc;">
-            <img src="${product.imageUrl}" alt="${product.name}" class="storefront-product-img" style="object-fit: cover; width: 100%; height: 100%;" />
+            <img src="${product.imageUrl}" alt="${product.name}" class="storefront-product-img" data-product-id="${product.id}" style="object-fit: cover; width: 100%; height: 100%;" />
             <span class="storefront-product-stock ${product.stock < 5 ? 'stock-low-badge' : 'stock-ok-badge'}">
               Stock: ${product.stock} units
             </span>
@@ -361,10 +537,11 @@ export class StorefrontPage extends BaseComponent {
       </div>
     `;
 
-    // Attach buy trigger modals
+    // Attach buy trigger modals to Buy buttons
     const buyTriggers = mountPoint.querySelectorAll('.btn-buy-trigger');
     buyTriggers.forEach((trigger) => {
-      trigger.addEventListener('click', () => {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation(); // Avoid triggering details modal if clicked inside card but not image
         const productName = (trigger as HTMLElement).dataset.name;
         const productPrice = parseFloat((trigger as HTMLElement).dataset.price || '0');
 
@@ -379,5 +556,83 @@ export class StorefrontPage extends BaseComponent {
         }
       });
     });
+
+    // Attach image clicks to show details modal
+    const productCards = mountPoint.querySelectorAll('.storefront-product-card');
+    productCards.forEach((card) => {
+      const imgWrapper = card.querySelector('.storefront-product-img-wrapper') as HTMLElement;
+      if (imgWrapper) {
+        imgWrapper.addEventListener('click', () => {
+          const img = imgWrapper.querySelector('.storefront-product-img') as HTMLElement;
+          const productId = img?.dataset.productId;
+          const product = this.products.find((p) => p.id === productId);
+          if (product) {
+            this.showProductDetails(product);
+          }
+        });
+      }
+    });
+  }
+
+  private showProductDetails(product: Product): void {
+    const modal = this.element?.querySelector('#product-details-modal') as HTMLElement;
+    const detailsImg = this.element?.querySelector('#details-img') as HTMLImageElement;
+    const detailsCategory = this.element?.querySelector('#details-category') as HTMLElement;
+    const detailsTitle = this.element?.querySelector('#details-title') as HTMLElement;
+    const detailsPrice = this.element?.querySelector('#details-price') as HTMLElement;
+    const detailsStockBadge = this.element?.querySelector('#details-stock-badge') as HTMLElement;
+    const detailsDesc = this.element?.querySelector('#details-description') as HTMLElement;
+    const btnBuyDetails = this.element?.querySelector('#btn-buy-details') as HTMLElement;
+
+    if (
+      modal &&
+      detailsImg &&
+      detailsCategory &&
+      detailsTitle &&
+      detailsPrice &&
+      detailsStockBadge &&
+      detailsDesc &&
+      btnBuyDetails
+    ) {
+      detailsImg.src = product.imageUrl;
+      detailsImg.alt = product.name;
+      detailsCategory.textContent = product.category.toUpperCase();
+      detailsTitle.textContent = product.name;
+      detailsPrice.textContent = formatCurrency(product.price);
+
+      // Stock level badge styling inside modal
+      if (product.stock < 5) {
+        detailsStockBadge.className = 'storefront-product-stock stock-low-badge';
+        detailsStockBadge.textContent = `Only ${product.stock} left!`;
+        detailsStockBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+        detailsStockBadge.style.color = '#ef4444';
+        detailsStockBadge.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+      } else {
+        detailsStockBadge.className = 'storefront-product-stock stock-ok-badge';
+        detailsStockBadge.textContent = `In Stock: ${product.stock} units`;
+        detailsStockBadge.style.background = 'rgba(34, 197, 94, 0.15)';
+        detailsStockBadge.style.color = '#22c55e';
+        detailsStockBadge.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+      }
+
+      detailsDesc.textContent = product.description;
+
+      // Bind buying button click inside details modal
+      btnBuyDetails.onclick = () => {
+        modal.classList.add('hidden');
+
+        const sslModal = this.element?.querySelector('#ssl-modal');
+        const sslProductName = this.element?.querySelector('#ssl-product-name');
+        const sslAmount = this.element?.querySelector('#ssl-amount');
+
+        if (sslModal && sslProductName && sslAmount) {
+          sslProductName.textContent = product.name;
+          sslAmount.textContent = formatCurrency(product.price);
+          sslModal.classList.remove('hidden');
+        }
+      };
+
+      modal.classList.remove('hidden');
+    }
   }
 }
